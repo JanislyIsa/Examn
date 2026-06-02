@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios</title>
+    
+</head>
+<body>
+    <h1>Gestión de Usuarios</h1>
+
+    <p th:if="${error}" th:text="${error}" style="color: red; font-weight: bold;"></p>
+
+    <form th:action="@{/usuario/save}" th:object="${usuario}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div>
+            <label>Usuario:</label>
+            <input type="text" th:field="*{usuario}" required>
+        </div>
+        <div>
+            <label>Contraseña:</label>
+            <input type="password" th:field="*{password}" required>
+        </div>
+        <div>
+            <label>Rol:</label>
+            <select th:field="*{rol}">
+                <option value="medico">Médico</option>
+                <option value="admin">Administrador</option>
+            </select>
+        </div>
+        <div>
+            <label>Médico:</label>
+            <select th:field="*{medico.id}" required>
+                <option value="">Seleccione un médico</option>
+                <option th:each="med : ${medicos}" 
+                        th:value="${med.id}" 
+                        th:text="${med.nombres} + ' ' + ${med.apellidos}"></option>
+            </select>
+        </div>
+        <div>
+            <label>Estado:</label>
+            <select th:field="*{estado}">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+            </select>
+        </div>
+
+        <button type="submit">Guardar Usuario</button>
+    </form>
+
+    <hr>
+
+    <h2>Lista de Usuarios</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Médico</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="usuario : ${usuarios}">
+                <td th:text="${usuario.id}"></td>
+                <td th:text="${usuario.medico != null ? usuario.medico.nombres + ' ' + usuario.medico.apellidos : 'Sin asignar'}"></td>
+                <td th:text="${usuario.usuario}"></td>
+                <td th:text="${usuario.rol}"></td>
+                
+                <td class="acciones">
+                    <a th:href="@{/usuario/editar/{id}(id=${usuario.id})}">Editar</a>
+                    <a th:href="@{/usuario/eliminar/{id}(id=${usuario.id})}" 
+                       onclick="return confirm('¿Eliminar este usuario?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/medico}">← Volver a Médicos</a>
+</body>
+</html>

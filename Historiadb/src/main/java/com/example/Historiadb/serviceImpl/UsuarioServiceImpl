@@ -1,0 +1,50 @@
+package com.example.Historiadb.serviceImpl;
+
+import com.example.Historiadb.model.Usuario;
+import com.example.Historiadb.repository.UsuarioRepository;
+import com.example.Historiadb.service.UsuarioService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class UsuarioServiceImpl implements UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    @Override
+    @Transactional
+    public Usuario create(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    @Transactional
+    public Usuario update(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        usuarioRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Usuario> read(Long id) {
+        return usuarioRepository.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Usuario> readAll() {
+        return usuarioRepository.findAll();
+    }
+}

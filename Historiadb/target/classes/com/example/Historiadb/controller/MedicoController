@@ -1,0 +1,74 @@
+package com.example.Historiadb.controller;
+
+import com.example.Historiadb.model.Medico;
+import com.example.Historiadb.service.MedicoService;
+import jakarta.validation.Valid;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/medico")
+public class MedicoController {
+
+    private static final String VIEW = "medico/listmedicos";
+    private static final String REDIRECT = "redirect:/medico";
+
+    private final MedicoService medicoService;
+
+    public MedicoController(MedicoService medicoService) {
+        this.medicoService = medicoService;
+    }
+
+    @GetMapping
+    public String listar(Model model) {
+        cargarFormulario(model);
+        return VIEW;
+    }
+
+    @PostMapping("/save")
+    public String save(@Valid @ModelAttribute("medico") Medico medico, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            cargarDatos(model);
+            return VIEW;
+        }
+        try {
+            if (medico.getId() == null) {
+                medicoService.create(medico);
+            } else {
+                medicoService.update(medico);
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Error al guardar: " + e.getMessage());
+            cargarDatos(model);
+            return VIEW;
+        }
+        return REDIRECT;
+    }
+
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Long id) {
+        medicoService.delete(id);
+        return REDIRECT;
+    }
+
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Long id, Model model) {
+        Medico medico = medicoService.read(id).orElse(null);
+        if (medico == null) return REDIRECT;
+
+        cargarDatos(model);
+        model.addAttribute("medico", medico);
+        return VIEW;
+    }
+
+    private void cargarFormulario(Model model) {
+        cargarDatos(model);
+        model.addAttribute("medico", new Medico());
+    }
+
+    private void cargarDatos(Model model) {
+        model.addAttribute("medicos", medicoService.readAll());
+    }
+}

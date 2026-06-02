@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Médicos</title>
+    
+</head>
+<body>
+    <h1>Gestión de Médicos</h1>
+
+    <p th:if="${error}" th:text="${error}" style="color: red; font-weight: bold;"></p>
+
+    <form th:action="@{/medico/save}" th:object="${medico}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div>
+            <label>CMP:</label>
+            <input type="text" th:field="*{cmp}" required>
+        </div>
+        <div>
+            <label>Nombres:</label>
+            <input type="text" th:field="*{nombres}" required>
+        </div>
+        <div>
+            <label>Apellidos:</label>
+            <input type="text" th:field="*{apellidos}" required>
+        </div>
+        <div>
+            <label>Especialidad:</label>
+            <input type="text" th:field="*{especialidad}" required>
+        </div>
+        <div>
+            <label>Teléfono:</label>
+            <input type="text" th:field="*{telefono}">
+        </div>
+        <div>
+            <label>Correo:</label>
+            <input type="email" th:field="*{correo}" required>
+        </div>
+        <div>
+            <label>Estado:</label>
+            <select th:field="*{estado}">
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+            </select>
+        </div>
+
+        <button type="submit">Guardar Médico</button>
+    </form>
+
+    <hr>
+
+    <h2>Lista de Médicos</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>CMP</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Especialidad</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="medico : ${medicos}">
+                <td th:text="${medico.id}"></td>
+                <td th:text="${medico.cmp}"></td>
+                <td th:text="${medico.nombres}"></td>
+                <td th:text="${medico.apellidos}"></td>
+                <td th:text="${medico.especialidad}"></td>
+                <td th:text="${medico.telefono}"></td>
+                <td th:text="${medico.correo}"></td>
+                
+                <td class="acciones">
+                    <a th:href="@{/medico/editar/{id}(id=${medico.id})}">Editar</a>
+                    <a th:href="@{/medico/eliminar/{id}(id=${medico.id})}" 
+                       onclick="return confirm('¿Eliminar este médico?')">Eliminar</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    <a th:href="@{/usuario}">Ver Usuarios</a>
+</body>
+</html>
